@@ -9,13 +9,11 @@ SRC=https://developer.nvidia.com/embedded/dlc/l4t-sources-28-2
 wget -O- $SRC | tar jxvOf - public_release/kernel_src.tbz2 | tar jxvpf - -C /usr/src #ETA: 5 min
 gunzip -c /proc/config.gz | perl -p -e 's/CONFIG_LOCALVERSION=""/CONFIG_LOCALVERSION="-tegra"/' | tee /usr/src/kernel/kernel-4.4/.config
 
-# Make module prep, enable 5,6th cores
+# Make module prep
 cd /usr/src/kernel/kernel-4.4
 make olddefconfig
 make prepare
 make modules_prepare
-echo 1 >/sys/devices/system/cpu/cpu1/online # enable 5th core
-echo 1 >/sys/devices/system/cpu/cpu2/online # enable 6th core
 make -j6 modules 
 
 # Clean up old, link to new
