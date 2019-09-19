@@ -9,13 +9,18 @@ MAINTAINER nuculur@gmail.com
 ARG URL=https://developer.download.nvidia.com/devzone/devcenter/mobile/jetpack_l4t/JETPACK_422_b21
 
 # Update packages, install some useful packages
-RUN apt-get update && apt-get install -y apt-utils bzip2 curl sudo unp && apt-get clean && rm -rf /var/cache/apt
+RUN apt-get update && apt-get install -y apt-utils bzip2 curl lbzip2 sudo unp && apt-get clean && rm -rf /var/cache/apt
 WORKDIR /tmp
 
 # Install drivers first
-RUN curl -sL http://developer.nvidia.com/embedded/dlc/l4t-jetson-tx2-driver-package-28-2 | tar xvfj -
-RUN chown root /etc/passwd /etc/sudoers /usr/lib/sudo/sudoers.so /etc/sudoers.d/README
-RUN /tmp/Linux_for_Tegra/apply_binaries.sh -r / && rm -fr /tmp/*
+RUN curl -sL $URL/P3310/Jetson_Linux_R32.2.1_aarch64.tbz2 | tar xvfj -
+RUN chown root /etc/passwd /etc/sudoers /usr/lib/sudo/sudoers.so /etc/sudoers.d/README && \
+    mkdir /tmp/root && \
+    cp -ar /etc /tmp/root/ && \
+    /tmp/Linux_for_Tegra/apply_binaries.sh -r /tmp/root && \
+    rm /tmp/root/etc/hosts /tmp/root/etc/hostname && \
+    cp -ar /tmp/root/* / && \
+    rm -fr /tmp/*
 
 ## Pull the rest of the jetpack libs for cuda/cudnn and install
 RUN curl $URL/cuda-repo-l4t-10-0-local-10.0.326_1.0-1_arm64.deb -so cuda-repo-l4t_arm64.deb
