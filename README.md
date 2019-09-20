@@ -107,12 +107,13 @@ docker run --privileged --name digits -p 5001:5001 -d openhorizon/aarch64-tx2-di
 
 To run Yolo:
 ```
+# The following commands assume a USB camera is attached (camera index 1).
 # as root on host TX2 allow x, e.g. 'xhost +'
 # then, assuming you have a usb webcam hooked up:
 # tiny yolo model against the VOC data set is the fastest (only 20 classes though)
-xhost + && docker run --privileged -e DISPLAY=$DISPLAY -v /tmp:/tmp --rm openhorizon/aarch64-tx2-darknet /darknet/darknet detector demo -c 1 cfg/voc.data cfg/tiny-yolo-voc.cfg tiny-yolo-voc.weights
+xhost + && docker run --privileged -e DISPLAY=$DISPLAY -v /tmp:/tmp --rm openhorizon/aarch64-tx2-darknet /darknet/darknet detector demo -c 1 cfg/voc.data cfg/yolov3-tiny.cfg yolov3-tiny.weights
 # regular yolo model is much more accurate and against MS COCO 91 classes; however, 2x slower in my tests:
-xhost + && docker run --privileged -e DISPLAY=$DISPLAY -v /tmp:/tmp --rm openhorizon/aarch64-tx2-darknet /darknet/darknet detector demo -c 1 cfg/coco.data cfg/yolo.cfg yolo.weights
+xhost + && docker run --privileged -e DISPLAY=$DISPLAY -v /tmp:/tmp --rm openhorizon/aarch64-tx2-darknet /darknet/darknet detector demo -c 1 cfg/coco.data cfg/yolov3.cfg yolov3.weights
 ```
 
 To run DustyNV's container:
